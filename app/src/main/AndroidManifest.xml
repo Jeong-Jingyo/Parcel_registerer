@@ -18,7 +18,7 @@
             android:screenOrientation="sensorPortrait"
             android:name=".DataSearchActivity"
             android:exported="true"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"/>
         <activity
             android:screenOrientation="sensorLandscape"
             android:name=".MainActivity"

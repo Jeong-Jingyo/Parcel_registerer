@@ -103,13 +103,15 @@ class ImageOnLine(
 ) {
     private val imageView = ImageView(context)
 
-    fun setProcessingStatIcon(processingCompleted: Boolean? = null) {
+    fun setProcessingStatIcon(processingCompleted: Int? = null) {
         frameView.removeView(imageView)
         if (processingCompleted == null) {
             imageView.setImageResource(R.drawable.ic_round_pending_24)
-        } else if (processingCompleted) {
+        } else if (processingCompleted == 0) { // 검색 정상(결과 하나만)
             imageView.setImageResource(R.drawable.ic_round_check_circle_24)
-        } else if (!processingCompleted) {
+        } else if (processingCompleted == 1) { // 검색 결과 여러개
+            imageView.setImageResource(R.drawable.ic_round_warning_24)
+        } else if (processingCompleted == -1) { // 데이터 찾을 수 없음
             imageView.setImageResource(R.drawable.ic_round_cancel_24)
         }
 

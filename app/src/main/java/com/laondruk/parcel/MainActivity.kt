@@ -132,14 +132,19 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     imageOnLine.setProcessingStatIcon()
+                    imageView.setOnClickListener {
+                        startActivity(
+                            Intent(this@MainActivity, DataSearchActivity::class.java)
+                                .putExtra("imagePath", "$outputDirectory/$fileName")
+                        )
+                    }
 
                     Log.i(TAG_IMAGE_PROCESSING, "Image Processing Started")
                     thread {
                         val mat = Mat()
                         Utils.bitmapToMat(bitmapImage, mat)
-                        var text = ImageProcessing().detect(mat)
+                        val text = ImageProcessing().detect(mat)
                         Log.i(TAG_IMAGE_PROCESSING, "Processed $text")
-                        text = "1학년 1반 24번 정진교\n    "
                         val texts = mutableListOf<String>()
 
                         val _text = text.replace("\n", " ").split(" ")
@@ -151,51 +156,60 @@ class MainActivity : AppCompatActivity() {
 
                         TODO("데이터 검색")
 //                        for (i in texts) {
-//                            if (i.length in 2..4) {
-//                                var results = mutableListOf<Student>()
-//                                try {
-//                                    var _result = database.findBy1stChar(i[0].toString())
-//                                    for (j in _result) {
-//                                        results.add(j)
-//                                    }
-//                                    _result = database.findBy2ndChar(i[1].toString())
-//
-//                                    for (j in _result) {
-//                                        if (!results.contains(j)) {
-//                                            results.add(j)
-//                                        }
-//                                    }
-//                                    _result = database.findBy3rdChar(i[2].toString())
-//                                    for (j in _result) {
-//                                        results.add(j)
-//                                    }
-//                                    _result = database.findBy4thChar(i[3].toString())
-//                                    for (j in _result) {
-//                                        results.add(j)
-//                                    }
 //                                } catch (e: StringIndexOutOfBoundsException) {
 //                                }
 //                            }
 //                        }
-
-//                        val result = Student(10124, 1, 1, 24, "정진교")
+//
+                        val result = arrayOf(Student(10124, 1, 1, 1, "홍길동"))
 
                         Log.i(TAG_IMAGE_PROCESSING, "data search done")
 
-                        runOnUiThread {
-                            imageView.setOnClickListener {
-                                startActivity(
-                                    Intent(this@MainActivity, DataSearchActivity::class.java)
-                                        .putExtra("imagePath", "$outputDirectory/$fileName")
-                                        .putExtra("grade", result.Grade)
-                                        .putExtra("klass", result.Klass)
-                                        .putExtra("number", result.Number)
-                                        .putExtra("name", result.Name)
-                                        .putExtra("nameAnnotation", result.NameAnnotation)
-                                )
-
+                        if (result.size == 1) {
+                            runOnUiThread {
+                                imageView.setOnClickListener {
+                                    startActivity(
+                                        Intent(this@MainActivity, DataSearchActivity::class.java)
+                                            .putExtra("imagePath", "$outputDirectory/$fileName")
+                                            .putExtra("grade", result[0].Grade)
+                                            .putExtra("klass", result[0].Klass)
+                                            .putExtra("number", result[0].Number)
+                                            .putExtra("name", result[0].Name)
+                                            .putExtra("nameAnnotation", result[0].NameAnnotation)
+                                    )
+                                }
+                                imageOnLine.setProcessingStatIcon(0)
                             }
-                            imageOnLine.setProcessingStatIcon(true)
+                        } else if (result.size >= 1) {
+                                runOnUiThread {
+                                    imageView.setOnClickListener {
+                                        startActivity(
+                                            android.content.Intent(
+                                                this@MainActivity,
+                                                com.laondruk.parcel.DataSearchActivity::class.java
+                                            )
+                                                .putExtra(
+                                                    "imagePath",
+                                                    "${com.laondruk.parcel.MainActivity.Companion.outputDirectory}/$fileName"
+                                                )
+                                                .putExtra("grade", result.Grade)
+                                                .putExtra("klass", result.Klass)
+                                                .putExtra("number", result.Number)
+                                                .putExtra("name", result.Name)
+                                                .putExtra("nameAnnotation", result.NameAnnotation)
+                                        )
+                                    }
+                                }
+                            } else {
+                            runOnUiThread {
+                                imageView.setOnClickListener {
+                                    startActivity(
+                                        Intent(this@MainActivity, DataSearchActivity::class.java)
+                                            .putExtra("imagePath", "$outputDirectory/$fileName")
+                                    )
+                                }
+                                imageOnLine.setProcessingStatIcon(-1)
+                            }
                         }
 
                     }
